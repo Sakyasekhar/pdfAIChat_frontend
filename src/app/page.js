@@ -53,7 +53,7 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/upload-pdf/?session_id=${sessionId}`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/upload-pdf/?session_id=${sessionId}`,
         {
           method: "POST",
           body: formData,
@@ -91,7 +91,7 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/query/`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/query/`,
         {
           method: "POST",
           headers: {
