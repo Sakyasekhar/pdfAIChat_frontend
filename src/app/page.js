@@ -53,7 +53,7 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        `api/upload-pdf/?session_id=${sessionId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/upload-pdf/?session_id=${sessionId}`,
         {
           method: "POST",
           body: formData,
@@ -90,9 +90,8 @@ export default function Home() {
       }));
 
     try {
-      
       const response = await fetch(
-        `api/query/`,
+        "http://ec2-3-92-167-188.compute-1.amazonaws.com:8000/query/",
         {
           method: "POST",
           headers: {
