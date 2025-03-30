@@ -91,7 +91,7 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        "http://ec2-3-92-167-188.compute-1.amazonaws.com:8000/query/",
+        `${process.env.NEXT_PUBLIC_API_URL}/query/`,
         {
           method: "POST",
           headers: {
