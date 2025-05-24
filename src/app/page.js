@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import ReactMarkdown from 'react-markdown';
 
 export default function Home() {
   const [messages, setMessages] = useState([]);
@@ -268,7 +269,31 @@ export default function Home() {
                   <p className="text-xs sm:text-sm">{msg.text}</p>
                 </div>
               ) : (
-                <p className="text-xs sm:text-sm">{msg.text}</p>
+                <div className="text-xs sm:text-sm prose dark:prose-invert prose-sm max-w-none">
+                  <ReactMarkdown
+                    components={{
+                      h1: ({node, ...props}) => <h1 className="text-xl font-bold mb-2" {...props} />,
+                      h2: ({node, ...props}) => <h2 className="text-lg font-bold mb-2" {...props} />,
+                      h3: ({node, ...props}) => <h3 className="text-base font-bold mb-2" {...props} />,
+                      p: ({node, ...props}) => <p className="mb-2" {...props} />,
+                      ul: ({node, ...props}) => <ul className="list-disc pl-4 mb-2" {...props} />,
+                      ol: ({node, ...props}) => <ol className="list-decimal pl-4 mb-2" {...props} />,
+                      li: ({node, ...props}) => <li className="mb-1" {...props} />,
+                      a: ({node, ...props}) => <a className="text-blue-600 dark:text-blue-400 hover:underline" {...props} />,
+                      code: ({node, inline, ...props}) => 
+                        inline ? 
+                          <code className="bg-gray-100 dark:bg-zinc-800 rounded px-1 py-0.5" {...props} /> :
+                          <code className="block bg-gray-100 dark:bg-zinc-800 rounded p-2 my-2 overflow-x-auto" {...props} />,
+                      pre: ({node, ...props}) => <pre className="bg-gray-100 dark:bg-zinc-800 rounded p-2 my-2 overflow-x-auto" {...props} />,
+                      blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-gray-300 dark:border-zinc-600 pl-4 italic my-2" {...props} />,
+                      table: ({node, ...props}) => <div className="overflow-x-auto my-2"><table className="min-w-full divide-y divide-gray-200 dark:divide-zinc-700" {...props} /></div>,
+                      th: ({node, ...props}) => <th className="px-4 py-2 bg-gray-100 dark:bg-zinc-800 text-left" {...props} />,
+                      td: ({node, ...props}) => <td className="px-4 py-2 border-t border-gray-200 dark:border-zinc-700" {...props} />,
+                    }}
+                  >
+                    {msg.text}
+                  </ReactMarkdown>
+                </div>
               )}
               
             </div>
