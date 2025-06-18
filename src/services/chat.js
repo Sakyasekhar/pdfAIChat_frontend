@@ -21,20 +21,17 @@ export class ChatService {
   }
 
   static async streamQuery(query, sessionId, chatHistory) {
-    const response = await fetch(
-      `${API_BASE_URL}/query/`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          session_id: sessionId,
-          query: query,
-          chat_history: chatHistory
-        }),
-      }
-    );
+    const response = await fetch('/api/stream', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query,
+        session_id: sessionId,
+        chat_history: chatHistory
+      }),
+    });
 
     if (!response.ok) {
       throw new Error("Failed to get response from server");
