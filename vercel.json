@@ -1,0 +1,28 @@
+{
+    "functions": {
+      "src/app/page.js": {
+        "maxDuration": 60
+      }
+    },
+    "headers": [
+      {
+        "source": "/api/(.*)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, no-store, must-revalidate"
+          },
+          {
+            "key": "Connection",
+            "value": "keep-alive"
+          }
+        ]
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "/api/stream",
+        "destination": "/api/stream"
+      }
+    ]
+  }
