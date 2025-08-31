@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
+import { Message, UseChatReturn } from '@/types/chat';
 
-export const useChat = () => {
-  const [messages, setMessages] = useState([]);
-  const [streamingText, setStreamingText] = useState("");
-  const [isQuerying, setIsQuerying] = useState(false);
-  const [sessionId, setSessionId] = useState("");
-  const chatEndRef = useRef(null);
+export const useChat = (): UseChatReturn => {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [streamingText, setStreamingText] = useState<string>("");
+  const [isQuerying, setIsQuerying] = useState<boolean>(false);
+  const [sessionId, setSessionId] = useState<string>("");
+  const chatEndRef = useRef<HTMLDivElement>(null);
 
   // Initialize session ID on first load
   useEffect(() => {
@@ -25,13 +26,13 @@ export const useChat = () => {
   }, [messages]);
 
   let messageIdCounter = 0;
-  const generateMessageId = () => {
+  const generateMessageId = (): string => {
     messageIdCounter += 1;
     return `${Date.now()}_${messageIdCounter}`;
   };
 
-  const addMessage = (text, sender, options = {}) => {
-    const newMessage = {
+  const addMessage = (text: string, sender: 'user' | 'bot', options: Partial<Message> = {}): string => {
+    const newMessage: Message = {
       id: generateMessageId(),
       text,
       sender,
@@ -41,17 +42,17 @@ export const useChat = () => {
     return newMessage.id;
   };
 
-  const updateMessage = (messageId, updates) => {
+  const updateMessage = (messageId: string, updates: Partial<Message>): void => {
     setMessages(prev => prev.map(msg => 
       msg.id === messageId ? { ...msg, ...updates } : msg
     ));
   };
 
-  const removeMessage = (messageId) => {
+  const removeMessage = (messageId: string): void => {
     setMessages(prev => prev.filter(msg => msg.id !== messageId));
   };
 
-  const clearMessages = () => {
+  const clearMessages = (): void => {
     setMessages([]);
   };
 

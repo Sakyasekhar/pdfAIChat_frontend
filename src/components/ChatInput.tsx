@@ -1,4 +1,7 @@
-const ChatInput = ({ 
+import React from 'react';
+import { ChatInputProps } from '@/types/chat';
+
+const ChatInput: React.FC<ChatInputProps> = ({ 
     input, 
     setInput, 
     file, 
@@ -24,12 +27,12 @@ const ChatInput = ({
               className="hidden"
             />
             <input
-              placeholder={hasUploadedPDF ? "Type your message..." : "Please upload a PDF first"}
+              placeholder="Type your message..."
               className="w-full p-2 sm:p-3 pr-10 sm:pr-12 rounded-xl bg-gray-100 dark:bg-zinc-800 dark:text-white border-none focus:ring-1 focus:ring-gray-300 dark:focus:ring-zinc-600 focus:outline-none text-xs sm:text-sm"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && onSendMessage()}
-              disabled={!hasUploadedPDF || isUploading || isQuerying}
+              disabled={isUploading || isQuerying}
             />
             <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex gap-1">
               <button 
