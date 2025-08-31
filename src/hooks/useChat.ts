@@ -1,5 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Message, UseChatReturn } from '@/types/chat';
+
+// Move counter outside component to avoid resetting
+let messageIdCounter = 0;
+const generateMessageId = (): string => {
+  messageIdCounter += 1;
+  return `${Date.now()}_${messageIdCounter}`;
+};
 
 export const useChat = (): UseChatReturn => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -25,13 +32,8 @@ export const useChat = (): UseChatReturn => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  let messageIdCounter = 0;
-  const generateMessageId = (): string => {
-    messageIdCounter += 1;
-    return `${Date.now()}_${messageIdCounter}`;
-  };
-
-  const addMessage = (text: string, sender: 'user' | 'bot', options: Partial<Message> = {}): string => {
+  // Memoize functions to prevent infinite re-renders
+  const addMessage = useCallback((text: string, sender: 'user' | 'bot', options: Partial<Message> = {}): string => {
     const newMessage: Message = {
       id: generateMessageId(),
       text,
@@ -40,21 +42,21 @@ export const useChat = (): UseChatReturn => {
     };
     setMessages(prev => [...prev, newMessage]);
     return newMessage.id;
-  };
+  }, []);
 
-  const updateMessage = (messageId: string, updates: Partial<Message>): void => {
+  const updateMessage = useCallback((messageId: string, updates: Partial<Message>): void => {
     setMessages(prev => prev.map(msg => 
       msg.id === messageId ? { ...msg, ...updates } : msg
     ));
-  };
+  }, []);
 
-  const removeMessage = (messageId: string): void => {
+  const removeMessage = useCallback((messageId: string): void => {
     setMessages(prev => prev.filter(msg => msg.id !== messageId));
-  };
+  }, []);
 
-  const clearMessages = (): void => {
+  const clearMessages = useCallback((): void => {
     setMessages([]);
-  };
+  }, []);
 
   return {
     messages,

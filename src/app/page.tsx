@@ -417,9 +417,9 @@ function ChatContent() {
     }
   };
 
-  const handleSidebarWidthChange = (width: number) => {
+  const handleSidebarWidthChange = useCallback((width: number) => {
     setSidebarWidth(width);
-  };
+  }, []);
 
   const handleDeleteConversation = async (conversationId: string) => {
     try {

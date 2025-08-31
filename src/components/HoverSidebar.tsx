@@ -81,7 +81,7 @@ const HoverSidebar: React.FC<HoverSidebarProps> = ({
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isResizing, onWidthChange, isExpanded]);
+  }, [isResizing, isExpanded, onWidthChange, minWidth, maxWidth]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!isExpanded) return;
