@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Suspense, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useChat } from "../hooks/useChat";
 import { ChatService } from "../services/chat";
@@ -15,7 +15,7 @@ import { ChatHistoryItem } from "@/types/chat";
 import { Conversation } from "@/types/conversation";
 import Link from "next/link";
 
-export default function Home() {
+function ChatContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { isAuthenticated, isLoading, user, logout } = useAuthContext();
@@ -100,7 +100,7 @@ export default function Home() {
     if (activeConversationId && !activeConversationId.startsWith('session_') && isAuthenticated) {
       loadConversationHistory();
     }
-  }, [activeConversationId, isAuthenticated]);
+  }, [activeConversationId, isAuthenticated, addMessage, clearMessages]);
 
   // Update URL when chatId changes
   useEffect(() => {
@@ -130,17 +130,7 @@ export default function Home() {
     };
   }, []);
 
-  // Load conversations when user is authenticated, or skip if not authenticated
-  useEffect(() => {
-    if (isAuthenticated && user) {
-      loadConversations();
-    } else {
-      // For non-authenticated users, just stop loading
-      setIsLoadingConversations(false);
-    }
-  }, [isAuthenticated, user]);
-
-  const loadConversations = async () => {
+  const loadConversations = useCallback(async () => {
     if (!user) return;
     
     try {
@@ -152,7 +142,17 @@ export default function Home() {
     } finally {
       setIsLoadingConversations(false);
     }
-  };
+  }, [user]);
+
+  // Load conversations when user is authenticated, or skip if not authenticated
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      loadConversations();
+    } else {
+      // For non-authenticated users, just stop loading
+      setIsLoadingConversations(false);
+    }
+  }, [isAuthenticated, user, loadConversations]);
 
   const uploadPDF = async (file: File) => {
     if (!file || !currentChatId) return;
@@ -591,5 +591,17 @@ export default function Home() {
       />
       </div>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center h-screen bg-gray-50 dark:bg-zinc-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    }>
+      <ChatContent />
+    </Suspense>
   );
 }

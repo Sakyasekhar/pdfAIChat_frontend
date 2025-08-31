@@ -23,7 +23,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     // Initialize theme on component mount
     initializeTheme();
     setCurrentTheme(getCurrentTheme());
-  }, []);
+  }, [initializeTheme, getCurrentTheme]);
 
   const handleThemeSwitch = (theme: ThemeName) => {
     switchTheme(theme);
