@@ -8,7 +8,7 @@ import {
 } from '@/types/conversation';
 import { AuthService } from './auth';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+const USER_SERVICE_BASE_URL = process.env.NEXT_PUBLIC_USER_SERVICE_URL;
 
 export class ConversationService {
   /**
@@ -17,7 +17,7 @@ export class ConversationService {
   static async createConversation(conversationData: NewConversationRequest): Promise<NewConversationResponse> {
     try {
       const response = await fetch(
-        `${API_BASE_URL}/user_service/v1/conversations/`,
+        `${USER_SERVICE_BASE_URL}/user_service/v1/conversations/`,
         {
           method: 'POST',
           headers: {
@@ -47,7 +47,7 @@ export class ConversationService {
   static async getUserConversations(userId: number): Promise<Conversation[]> {
     try {
       const response = await fetch(
-        `${API_BASE_URL}/user_service/v1/users/${userId}/conversations`,
+        `${USER_SERVICE_BASE_URL}/user_service/v1/users/${userId}/conversations`,
         {
           method: 'GET',
           headers: {
@@ -77,7 +77,7 @@ export class ConversationService {
   static async getConversationHistory(conversationId: string): Promise<ConversationHistory> {
     try {
       const response = await fetch(
-        `${API_BASE_URL}/user_service/v1/conversations/${conversationId}/history`,
+        `${USER_SERVICE_BASE_URL}/user_service/v1/conversations/${conversationId}/history`,
         {
           method: 'GET',
           headers: {
@@ -107,7 +107,7 @@ export class ConversationService {
   static async addMessage(conversationId: string, messageData: AddMessageRequest): Promise<void> {
     try {
       const response = await fetch(
-        `${API_BASE_URL}/user_service/v1/conversations/${conversationId}/messages`,
+        `${USER_SERVICE_BASE_URL}/user_service/v1/conversations/${conversationId}/messages`,
         {
           method: 'POST',
           headers: {
@@ -131,7 +131,7 @@ export class ConversationService {
   static async deleteConversation(conversationId: string): Promise<void> {
     try {
       const response = await fetch(
-        `${API_BASE_URL}/user_service/v1/conversations/${conversationId}`,
+        `${USER_SERVICE_BASE_URL}/user_service/v1/conversations/${conversationId}`,
         {
           method: 'DELETE',
           headers: {
@@ -157,7 +157,7 @@ export class ConversationService {
   ): Promise<{ conversation_id: string; is_pinned: boolean; message: string }> {
     try {
       const response = await fetch(
-        `${API_BASE_URL}/user_service/v1/conversations/${conversationId}/pin`,
+        `${USER_SERVICE_BASE_URL}/user_service/v1/conversations/${conversationId}/pin`,
         {
           method: 'PATCH',
           headers: {
