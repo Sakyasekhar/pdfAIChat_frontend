@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
-import { LogOut, Sun, Moon, Menu, MessageSquare, Pin, PinOff, LogIn } from 'lucide-react';
+import { LogOut, Sun, Moon, Menu, MessageSquare, Pin, PinOff, LogIn, Beaker } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useRouter } from 'next/navigation';
 
 interface HoverSidebarProps {
   isAuthenticated: boolean;
@@ -27,8 +28,11 @@ const HoverSidebar: React.FC<HoverSidebarProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [isPinned, setIsPinned] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
+  const [isLabMenuOpen, setIsLabMenuOpen] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
+  const labMenuRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const router = useRouter();
   const minWidth = 240;
   const maxWidth = 600;
   const collapsedWidth = 64;
@@ -56,6 +60,23 @@ const HoverSidebar: React.FC<HoverSidebarProps> = ({
       setIsExpanded(true);
     }
   };
+
+  // Handle click outside for lab menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (labMenuRef.current && !labMenuRef.current.contains(event.target as Node)) {
+        setIsLabMenuOpen(false);
+      }
+    };
+
+    if (isLabMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isLabMenuOpen]);
 
   // Handle resizing
   useEffect(() => {
@@ -132,7 +153,39 @@ const HoverSidebar: React.FC<HoverSidebarProps> = ({
           </div>
 
           {/* Bottom section - Action buttons */}
-          <div className="flex flex-col items-center mt-auto py-4 space-y-3">
+          <div className="flex flex-col items-center mt-auto py-4 space-y-3" ref={!isExpanded && !isPinned ? labMenuRef : null}>
+            {/* Lab Menu Button */}
+            <div className="relative">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => setIsLabMenuOpen(!isLabMenuOpen)}
+                    className={`p-3 rounded-lg transition-colors ${isLabMenuOpen ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-600 dark:text-gray-400'}`}
+                    aria-label="Lab Tools"
+                  >
+                    <Beaker className="w-5 h-5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <p>Lab Tools</p>
+                </TooltipContent>
+              </Tooltip>
+
+              {isLabMenuOpen && (
+                <div className="absolute bottom-0 left-full ml-2 w-48 bg-white dark:bg-zinc-800 rounded-lg shadow-xl border border-gray-200 dark:border-zinc-700 py-1 z-50">
+                  <button
+                    onClick={() => {
+                      setIsLabMenuOpen(false);
+                      router.push('/diff-checker');
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-zinc-700"
+                  >
+                    Diff Checker
+                  </button>
+                </div>
+              )}
+            </div>
+
             {/* Theme Toggle Button */}
             <Tooltip>
               <TooltipTrigger asChild>
@@ -240,7 +293,39 @@ const HoverSidebar: React.FC<HoverSidebarProps> = ({
 
           {/* Bottom action buttons - Fixed position */}
           <div className="p-3 border-t border-gray-200 dark:border-zinc-700">
-            <div className="flex items-center justify-center gap-3">
+            <div className="flex items-center justify-center gap-3" ref={isExpanded || isPinned ? labMenuRef : null}>
+              {/* Lab Menu Button */}
+              <div className="relative">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setIsLabMenuOpen(!isLabMenuOpen)}
+                      className={`p-3 rounded-lg transition-colors ${isLabMenuOpen ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-600 dark:text-gray-400'}`}
+                      aria-label="Lab Tools"
+                    >
+                      <Beaker className="w-5 h-5" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">
+                    <p>Lab Tools</p>
+                  </TooltipContent>
+                </Tooltip>
+
+                {isLabMenuOpen && (
+                  <div className="absolute bottom-full left-0 mb-2 w-48 bg-white dark:bg-zinc-800 rounded-lg shadow-xl border border-gray-200 dark:border-zinc-700 py-1 z-50">
+                    <button
+                      onClick={() => {
+                        setIsLabMenuOpen(false);
+                        router.push('/diff-checker');
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-zinc-700"
+                    >
+                      Diff Checker
+                    </button>
+                  </div>
+                )}
+              </div>
+
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button
