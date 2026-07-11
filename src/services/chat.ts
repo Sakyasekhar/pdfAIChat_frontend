@@ -1,6 +1,6 @@
 import { UploadPDFResponse, ChatHistoryItem } from '@/types/chat';
 
-const AGENT_SERVICE_BASE_URL = process.env.NEXT_PUBLIC_AGENT_SERVICE_URL;
+const AGENT_SERVICE_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/agent_service`;
 
 export class ChatService {
   static async uploadPDF(file: File, conversationId: string): Promise<UploadPDFResponse> {

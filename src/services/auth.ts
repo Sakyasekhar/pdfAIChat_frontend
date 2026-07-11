@@ -1,6 +1,6 @@
 import { CreateUserRequest, LoginCredentials, AuthResponse, User } from '@/types/auth';
 
-const USER_SERVICE_BASE_URL = process.env.NEXT_PUBLIC_USER_SERVICE_URL
+const USER_SERVICE_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/user_service`;
 
 export class AuthService {
   /**
